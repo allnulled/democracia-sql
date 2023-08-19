@@ -26,8 +26,8 @@ const TRACE = function (...args) {
 const conectar_base_de_datos = function () {
     TRACE("conecto base de datos")
     if (opciones.DB_RESET) {
+        TRACE("reseteo base de datos")
         try {
-            TRACE("reseteo base de datos")
             fs.unlinkSync(ruta_a_db);
         } catch (error) { }
     }
@@ -53,7 +53,15 @@ const gestionar_error_de_peticion = function(response, error) {
         detalles: error.stack
     });
 };
-
+const alfabeto_natural = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".split("");
+const generar_string_aleatorio = function (len, alfabeto = alfabeto_natural) {
+    TRACE("genero string aleatorio")
+    let index = 0, str = "";
+    while (index++ < len) {
+        str += alfabeto[Math.floor(Math.random() * alfabeto.length)];
+    }
+    return str;
+}
 const start = async function() {
     TRACE("inicio proceso principal")
     const db = await conectar_base_de_datos();
@@ -92,8 +100,8 @@ const start = async function() {
         const fichero_de_consulta = path.resolve(__dirname, "..", "database", "query", fichero);
         const contenido_de_consulta = fs.readFileSync(fichero_de_consulta).toString();
         return async function(request, response) {
+            TRACE("gestiono controlador de consulta SQL a: " + fichero);
             try {
-                TRACE("gestiono controlador de consulta SQL a: " + fichero);
                 const consulta_renderizada = ejs.render(contenido_de_consulta, {
                     request,
                     response,
@@ -106,13 +114,63 @@ const start = async function() {
             }
         };
     };
+    const gestionar_controlador_de_iniciar_sesion = function() {
+        return async function(request, response) {
+            TRACE("gestiono controlador de iniciar sesión");
+            try {
+                const nombre_sanit = request.obtener_parametro_sanitizado("nombre");
+                const contrasenya_sanit = request.obtener_parametro_sanitizado("contrasenya");
+                const usuarios_encontrados = await gestionar_consulta_sql(`SELECT * FROM Usuario WHERE nombre = ${nombre_sanit} AND contrasenya = ${contrasenya_sanit};`);
+                if(usuarios_encontrados.length !== 1) {
+                    throw new Error("No hay usuarios coincidentes con el nombre y la contraseña proporcionados");
+                }
+                const [ usuario_encontrado ] = usuarios_encontrados;
+                const sesiones_encontradas = await gestionar_consulta_sql(`SELECT * FROM Sesion WHERE id_usuario = ${usuario_encontrado.id};`);
+                if (sesiones_encontradas.length === 1) {
+                    const [ sesion_encontrada ] = sesiones_encontradas;
+                    return response.json({
+                        sesion_nueva: false,
+                        token_de_sesion: sesion_encontrada.token_de_sesion
+                    });
+                } else {
+                    const token_de_sesion = sanitizar_valor(generar_string_aleatorio(100));
+                    await gestionar_consulta_sql(`INSERT INTO Sesion (id_usuario, token_de_sesion) VALUES (${usuario_encontrado.id}, ${token_de_sesion});`);
+                    return response.json({
+                        sesion_nueva: true,
+                        token_de_sesion: token_de_sesion
+                    });
+                }
+            } catch(error) {
+                return gestionar_error_de_peticion(response, error);
+            }
+        };
+    };
+    const gestionar_controlador_de_cerrar_sesion = function () {
+        return async function (request, response) {
+            TRACE("gestiono controlador de cerrar sesión");
+            try {
+                const token_de_sesion = sanitizar_valor(request.headers.authorization);
+                const sesiones_encontradas = await gestionar_consulta_sql(`SELECT * FROM Sesion WHERE token_de_sesion = ${token_de_sesion};`);
+                if(sesiones_encontradas.length !== 1) {
+                    throw new Error("No hay sesiones coincidentes con la credencial proporcionada");
+                }
+                await gestionar_consulta_sql(`DELETE FROM Sesion WHERE token_de_sesion = ${token_de_sesion};`);
+                return response.json({
+                    sesion_cerrada: true
+                })
+            } catch (error) {
+                return gestionar_error_de_peticion(response, error);
+            }
+
+        };
+    };
     const expandir_request_y_response = function() {
-        return function(req, res, next) {
-            req.obtener_parametro_sanitizado = function(id) {
-                if(req.body && req.body[id]) {
-                    return sanitizar_valor(req.body[id]);
-                } else if(id in req.query) {
-                    return sanitizar_valor(req.query[id]);
+        return function(request, response, next) {
+            request.obtener_parametro_sanitizado = function(id) {
+                if(request.body && request.body[id]) {
+                    return sanitizar_valor(request.body[id]);
+                } else if(id in request.query) {
+                    return sanitizar_valor(request.query[id]);
                 }
                 return undefined;
             };
@@ -120,7 +178,7 @@ const start = async function() {
         };
     };
     await inicializar_base_de_datos();
-    app.get("/", (request, response) => response.sendFile(__dirname + "/www/html/index.html"));
+    app.get("/", (request, response) => response.sendFile(__dirname + "/www/html/index.1.html"));
     app.use("/db", body_parser.json(), expandir_request_y_response());
     app.get("/db/Seleccionar-implementaciones-destacadas", gestionar_controlador_de_consulta_sql("Seleccionar-implementaciones-destacadas.ejs.sql"))
     app.get("/db/Seleccionar-implementaciones", gestionar_controlador_de_consulta_sql("Seleccionar-implementaciones.ejs.sql"))
@@ -162,10 +220,12 @@ const start = async function() {
     app.use("/db/Eliminar-soluciones", gestionar_controlador_de_consulta_sql("Eliminar-soluciones.ejs.sql"))
     app.use("/db/Eliminar-votaciones", gestionar_controlador_de_consulta_sql("Eliminar-votaciones.ejs.sql"))
     app.use("/db/Eliminar-votos", gestionar_controlador_de_consulta_sql("Eliminar-votos.ejs.sql"))
+    app.use("/db/Iniciar-sesion", gestionar_controlador_de_iniciar_sesion());
+    app.use("/db/Cerrar-sesion", gestionar_controlador_de_cerrar_sesion());
     await new Promise((ok, fail) => {
         app.listen(5340, function() {
             TRACE("escucho en servidor:")
-            console.log("  - http://127.0.0.1:5340")
+            console.log("  [*]     http://127.0.0.1:5340")
             ok();
         });
     });

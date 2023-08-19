@@ -26,8 +26,7 @@ DROP TABLE IF EXISTS Usuario;
 
 CREATE TABLE Usuario (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  nombre VARCHAR(256),
-  apellidos VARCHAR(512),
+  nombre VARCHAR(256) UNIQUE NOT NULL,
   domicilio VARCHAR(1024),
   correo VARCHAR (512),
   contrasenya VARCHAR(512)
@@ -134,3 +133,12 @@ CREATE TABLE Modificacion_de_ley (
   id_implementacion_original INTEGER,
   FOREIGN KEY (id_implementacion_original) REFERENCES Implementacion_destacada (id)
 );
+
+CREATE TABLE Sesion (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  id_usuario INTEGER NOT NULL,
+  token_de_sesion VARCHAR(100) NOT NULL,
+  FOREIGN KEY (id_usuario) REFERENCES Usuario (id)
+);
+
+INSERT INTO Usuario (nombre, domicilio, contrasenya) VALUES ('administrador', 'administración', 'admin');

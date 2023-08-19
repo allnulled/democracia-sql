@@ -1,0 +1,215 @@
+Ejecutable como documento HTML5
+    con autor allnulled
+    con nombre index
+    con versión 1
+<head>
+    <title>Inicio | Democracia</title>
+    <meta charset="utf8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        * {
+            font-family: Roboto;
+            font-size: 10px;
+        }
+        fieldset {
+            display: inline-block;
+            vertical-align: top;
+            background-color: #E8E8E8;
+        }
+        legend {
+            background-color: #333;
+            color: white;
+            border: 1px solid #333;
+            border-radius: 1pt;
+            padding: 3px;
+            margin-top: 6px;
+        }
+        b {
+            text-decoration: underline;
+        }
+        .win7 [role="button"], .win7 button {
+            background: linear-gradient(180deg,#eee 45%,#ddd 0,#bbb);
+            border: 1px solid #8e8f8f;
+            border-radius: 3px;
+            box-shadow: inset 0 -1px 1px hsla(0,0%,100%,.8),inset 0 1px 1px #fff;
+            box-sizing: border-box;
+            color: #222;
+            font: 9pt Segoe UI,sans-serif;
+            min-height: 23px;
+            min-width: 75px;
+            padding: 0 12px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body><div id="app"></div></body>.
+
+importo api nativa.
+creo datos_globales como {
+
+}.
+
+creo PaginaDeInicio como un componente vue2 con nombre "PaginaDeInicio" con plantilla {
+  <div class="PaginaDeInicio Component win7">
+    <fieldset v-if="token_de_sesion">
+        <legend>Directorios generales</legend>
+        <ul>
+            <li>
+                <b>Problemas</b>
+                <ul>
+                    <li>
+                        <a href="/db/Seleccionar-problemas-destacados">Ver problemas destacados</a>
+                    </li>
+                    <li>
+                        <a href="/db/Seleccionar-problemas">Ver problemas</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <b>Soluciones</b>
+                <ul>
+                    <li>
+                        <a href="/db/Seleccionar-soluciones-destacadas">Ver soluciones destacadas</a>
+                    </li>
+                    <li>
+                        <a href="/db/Seleccionar-soluciones">Ver soluciones</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <b>Implementaciones</b>
+                <ul>
+                    <li>
+                        <a href="/db/Seleccionar-implementaciones-destacadas">Ver implementaciones destacadas</a>
+                    </li>
+                    <li>
+                        <a href="/db/Seleccionar-implementaciones">Ver implementaciones</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <b>Votaciones</b>
+                <ul>
+                    <li>
+                        <a href="/db/Seleccionar-votaciones">Ver votaciones</a>
+                    </li>
+                    <li>
+                        <a href="/db/Seleccionar-votos">Ver votos</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <b>Ley</b>
+                <ul>
+                    <li>
+                        <a href="/db/Seleccionar-modificacion-de-ley">Ver modificaciones de ley</a>
+                    </li>
+                    <li>
+                        <a href="/db/Seleccionar-ley">Ver ley</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </fieldset>
+    <fieldset>
+        <legend>Identificación</legend>
+        <table v-if="!token_de_sesion">
+            <tbody>
+                <tr>
+                    <td>
+                        <div style="text-align: right;">Nombre:</div>
+                    </td>
+                    <td>
+                        <input style="width: 100%;" type="text" v-model="nombre" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div style="text-align: right;">Contraseña:</div>
+                    </td>
+                    <td>
+                        <input style="width: 100%;" type="password" v-model="contrasenya" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="1000">
+                        <button style="width: 100%;" v-on:click="loguearse">Entrar</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div v-else>
+            <div>Bienvenido a <b>Democracia Directa 2.0</b>. Eres <b>{{ nombre }}</b>.</div>
+            <div>Si quieres salir, clica <a href="#" v-on:click="desloguearse">aquí</a>.</div>
+        </div>
+    </fieldset>
+  </div>
+} con lógica {
+    retorno {
+        método data donde {
+            retorno {
+                nombre: "administrador",
+                contrasenya: "admin",
+                token_de_sesion: undefined,
+                error: undefined
+            }.
+        }.
+        propiedad methods como {
+            método asíncrono loguearse donde {
+                creo respuesta_logueo como asíncronamente una petición http
+                    con url "/db/Iniciar-sesion"
+                    con método "POST"
+                    con cuerpo {
+                        nombre: this.nombre,
+                        contrasenya: this.contrasenya
+                    }.
+                creo token_de_sesion como respuesta_logueo.data.token_de_sesion.
+                asigno datos_globales.token_de_sesion como token_de_sesion.
+                asigno this.token_de_sesion como token_de_sesion.
+            }.
+            método asíncrono desloguearse donde {
+                creo respuesta_deslogueo como asíncronamente una petición http
+                    con url "/db/Cerrar-sesion"
+                    con método "POST"
+                    con cabeceras {
+                        authorization: this.token_de_sesion
+                    }.
+                creo token_de_sesion como respuesta_deslogueo.data.token_de_sesion.
+                asigno datos_globales.token_de_sesion como undefined.
+                asigno this.token_de_sesion como undefined.
+            }.
+        }.
+    }.
+}.
+
+creo App como una aplicación vue2 con nombre "App" con rutas [{
+    propiedad path como "/".
+    propiedad name como "Home".
+    propiedad component como PaginaDeInicio.
+    propiedad props como {}.
+}] con traducciones {
+    propiedad es como {}.
+    propiedad en como {}.
+    propiedad ca como {}.
+} con plantilla {
+  <div class="App Component Castelog-app">
+    <router-view></router-view>
+  </div>
+} con estilos {
+    html {}
+    body {}
+    .Component {}
+    .App {}
+} con lógica {
+  retorno {
+    método data donde {
+      retorno {
+        
+      }.
+    }.
+    propiedad methods como {}.
+    propiedad watch como {}.
+    método beforeMount donde {}.
+    método mounted donde {}.
+  }.
+} montada en "#app".
