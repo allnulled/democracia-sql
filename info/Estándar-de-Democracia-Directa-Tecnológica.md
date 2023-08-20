@@ -44,9 +44,27 @@ Y esto no quita, que una máquina pueda ser hackeable. Pero aún y así, esto, p
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## Estándar democrático común (versión 1)
 
+
+
 El **Estándar democrático común** se define como el conjunto de herramientas y prácticas (abstractos) que pueden considerarse suscritos a los **Estándares democráticos de la Sociedad Horizontal**. A continuación se intentan definir estos estándares.
+
+
 
 - Artículo 1. La democracia se compone de:
   - 1.1 Cuerpo democrático:
@@ -81,8 +99,27 @@ El **Estándar democrático común** se define como el conjunto de herramientas 
     - 1.2.5. Implementación
     - 1.2.6. Implementación destacada
 
+
+
 Bueno, pues eso sería el artículo 1. Que podemos descomponerlo en muchos artículos pequeños, si quieres. Me da igual. El punto de esto es que, la cámara, los dos tercios, se tienen que poner de acuerdo, ecétera. No. Eso. No. Eso es llamarte "basura" en palabras raras. Esto, es democracia igualitaria. Lo otro, pues o rodeos de esto, o líneas más rectas de esto, o otra cosa. Pero democracia igualitaria... vamos, a mí no se me ocurre otra forma. Creo que es pura álgebra. Es eso. La división: `poder legislativo / ciudadanos` viene a ser esto, y nada más. Y pueedo darle muchos rodeos. Pero vamos, diría que no hay otra. Y con su metáfora de «cuerpo» y «materia», de «yo» y «mundo» y todo. Su analogía. Analogía algebraica. No sé, no tengo mucho más que argumentar, creo que se argumenta solo. Para el que lo quiera entender. Para el suprenazi que lo ve diferente royo «estos son mejores y merecen hablar por los demás, y encima estos son peores y no merecen hablar por sí mismos», pues claro. Claro. Claro que puede haber muchas formas de gobernarse. Lo normal es que sigamos la norma, la normalidad, sin pensar en todo esto. Pero ahora, te lo presento. Ahora, ya lo ves, lo sabes, lo entiendes. Ahora, escoges de verdad. Entre mierda, o igualdad. Que igual la mierda es mejor. Pero no la llames democracia. Es, al final, lo que yo pido: deja de llamaarla democracia, porque no es democracia. Es más parecido a una dictadura animada.
+
+
 
 Pues todo está más o menos ahí. No es un estándar estricto, pero es un estándar suficiente. No puedo explicarlo más formalmente. Soy muy informal. Muy improtocolario. Y así me va, exacto. Bueno, discrepo que por pro-protocolario me fuera mucho mejor. Quizá sí. No conozco de prótocols...
 
+
+
 Y lo he definido como versión 1 oprque sería la versión que le daría si de un producto de software, que es lo que debería conseguir yo, se tratase.
+
+
+
+
+
+
+
+
+
+
+
+
+
