@@ -40,6 +40,10 @@ La democracia tecnológica se basa, principalmente, en estas 2 tecnologías: **i
 
 Y esto no quita, que una máquina pueda ser hackeable. Pero aún y así, esto, para mí, es vivir ya en un sistema hackeado. Por los ricos. Pero hackeado, al fin y al cabo. De hecho, no creo que sea casualidad que los más ricos a menudo estén asociados con las tecnologías. Pero de esto ya hablo en el documento de [Economics Framework](https://allnulled.github.io/economics-framework/Macroeconomia.html) (uno de los documentos clave también para comprender suficientemente la realidad económica y política y a qué está respondiendo todo esto que hago): del valor de la tecnología en la economía realista. No la falsista-monetista esta actual-mundial.
 
+
+
+
+
 ## Estándar democrático común (versión 1)
 
 El **Estándar democrático común** se define como el conjunto de herramientas y prácticas (abstractos) que pueden considerarse suscritos a los **Estándares democráticos de la Sociedad Horizontal**. A continuación se intentan definir estos estándares.
