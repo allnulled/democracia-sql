@@ -19,10 +19,9 @@ const sqlite3 = require('sqlite3').verbose();
 const ruta_a_crear_db = path.resolve(__dirname, "..", "database", "Crear-base-de-datos.sql");
 const ruta_a_db = path.resolve(__dirname, "..", "Base-de-datos.sqlite");
 const sanitizar_valor = sqlstring.escape;
+const utils = require(__dirname + "/utils/index.js")(api);
+const { TRACE } = utils;
 const sanitizar_id = sqlstring.escapeId;
-const TRACE = function (...args) {
-    console.log("[TRACE]", ...args);
-}
 const conectar_base_de_datos = function () {
     TRACE("conecto base de datos")
     if (opciones.DB_RESET) {
@@ -53,15 +52,6 @@ const gestionar_error_de_peticion = function(response, error) {
         detalles: error.stack
     });
 };
-const alfabeto_natural = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".split("");
-const generar_string_aleatorio = function (len, alfabeto = alfabeto_natural) {
-    TRACE("genero string aleatorio")
-    let index = 0, str = "";
-    while (index++ < len) {
-        str += alfabeto[Math.floor(Math.random() * alfabeto.length)];
-    }
-    return str;
-}
 const start = async function() {
     TRACE("inicio proceso principal")
     const db = await conectar_base_de_datos();
@@ -133,7 +123,7 @@ const start = async function() {
                         token_de_sesion: sesion_encontrada.token_de_sesion
                     });
                 } else {
-                    const token_de_sesion = sanitizar_valor(generar_string_aleatorio(100));
+                    const token_de_sesion = sanitizar_valor(utils.generar_string_aleatorio(100));
                     await gestionar_consulta_sql(`INSERT INTO Sesion (id_usuario, token_de_sesion) VALUES (${usuario_encontrado.id}, ${token_de_sesion});`);
                     return response.json({
                         sesion_nueva: true,
@@ -247,11 +237,13 @@ const start = async function() {
         gestionar_error_de_peticion,
         gestionar_consulta_sql,
         gestionar_consulta_sql_multiple,
+        utils,
         inicializar_base_de_datos,
         gestionar_controlador_de_consulta_sql,
         sanitizar_valor,
         sanitizar_id
     };
+    utils.rellenar_db(api);
     return api;
 };
 

@@ -24,6 +24,8 @@ DROP TABLE IF EXISTS Problema;
 
 DROP TABLE IF EXISTS Usuario;
 
+DROP TABLE IF EXISTS Ciclo_democratico;
+
 CREATE TABLE Usuario (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   nombre VARCHAR(256) UNIQUE NOT NULL,
@@ -65,6 +67,8 @@ CREATE TABLE Problema (
   nombre VARCHAR(2048),
   descripcion TEXT,
   id_usuario_creador INTEGER,
+  id_ciclo_democratico INTEGER,
+  FOREIGN KEY (id_ciclo_democratico) REFERENCES Ciclo_democratico (id),
   FOREIGN KEY (id_usuario_creador) REFERENCES Usuario (id)
 );
 
@@ -73,6 +77,8 @@ CREATE TABLE Problema_destacado (
   nombre VARCHAR(2048),
   descripcion TEXT,
   id_problema_original INTEGER,
+  id_ciclo_democratico INTEGER,
+  FOREIGN KEY (id_ciclo_democratico) REFERENCES Ciclo_democratico (id),
   FOREIGN KEY (id_problema_original) REFERENCES Problema (id)
 );
 
@@ -82,6 +88,8 @@ CREATE TABLE Solucion (
   descripcion TEXT,
   id_usuario_creador INTEGER,
   id_problema_original INTEGER,
+  id_ciclo_democratico INTEGER,
+  FOREIGN KEY (id_ciclo_democratico) REFERENCES Ciclo_democratico (id),
   FOREIGN KEY (id_usuario_creador) REFERENCES Usuario (id),
   FOREIGN KEY (id_problema_original) REFERENCES Problema (id)
 );
@@ -91,6 +99,8 @@ CREATE TABLE Solucion_destacada (
   nombre VARCHAR(2048),
   descripcion TEXT,
   id_solucion_original INTEGER,
+  id_ciclo_democratico INTEGER,
+  FOREIGN KEY (id_ciclo_democratico) REFERENCES Ciclo_democratico (id),
   FOREIGN KEY (id_solucion_original) REFERENCES Solucion (id)
 );
 
@@ -100,6 +110,8 @@ CREATE TABLE Implementacion (
   descripcion TEXT,
   id_usuario_creador INTEGER,
   id_solucion_original INTEGER,
+  id_ciclo_democratico INTEGER,
+  FOREIGN KEY (id_ciclo_democratico) REFERENCES Ciclo_democratico (id),
   FOREIGN KEY (id_usuario_creador) REFERENCES Usuario (id),
   FOREIGN KEY (id_solucion_original) REFERENCES Solucion_destacada (id)
 );
@@ -109,6 +121,8 @@ CREATE TABLE Implementacion_destacada (
   nombre VARCHAR(2048),
   descripcion TEXT,
   id_implementacion_original INTEGER,
+  id_ciclo_democratico INTEGER,
+  FOREIGN KEY (id_ciclo_democratico) REFERENCES Ciclo_democratico (id),
   FOREIGN KEY (id_implementacion_original ) REFERENCES Implementacion (id)
 );
 
@@ -131,6 +145,8 @@ CREATE TABLE Modificacion_de_ley (
   uuid VARCHAR(128),
   descripcion TEXT,
   id_implementacion_original INTEGER,
+  id_ciclo_democratico INTEGER,
+  FOREIGN KEY (id_ciclo_democratico) REFERENCES Ciclo_democratico (id),
   FOREIGN KEY (id_implementacion_original) REFERENCES Implementacion_destacada (id)
 );
 
@@ -139,6 +155,17 @@ CREATE TABLE Sesion (
   id_usuario INTEGER NOT NULL,
   token_de_sesion VARCHAR(100) NOT NULL,
   FOREIGN KEY (id_usuario) REFERENCES Usuario (id)
+);
+
+CREATE TABLE Ciclo_democratico (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  fecha_de_creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
+  etapas_de_ciclo VARCHAR(1024),
+  etapa_de_ciclo_actual INTEGER,
+  texto TEXT,
+  token_de_sesion VARCHAR(100) NOT NULL,
+  id_usuario_creador INTEGER,
+  FOREIGN KEY (id_usuario_creador) REFERENCES Usuario (id)
 );
 
 INSERT INTO Usuario (nombre, domicilio, contrasenya) VALUES ('administrador', 'administración', 'admin');
